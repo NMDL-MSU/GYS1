@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:30:00
+#SBATCH --mem=5G
+#SBATCH -J GYS1
+#SBATCH -o GYS1.o%j
+
+#=====================================================================
+# This script runs: GYS1.R
+# Submited on: Wed Oct 10 17:09:23 EDT 2018
+#=====================================================================
+
+# Work Directory
+cd /mnt/research/NMDL/qPCR/GYS1
+
+# Run R Code
+R -e 'library("knitr");knitr::spin ("GYS1.R")'
+
+# Add metadata to md file
+cat .metadata GYS1.md > tmp; mv tmp GYS1.md
+
+# Render HTML
+R -e 'library("prettydoc");rmarkdown::render ("GYS1.md")'
+
+# Job Details
+echo Job Details
+scontrol show job $SLURM_JOB_ID

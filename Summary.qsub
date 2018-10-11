@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:30:00
+#SBATCH --mem=5G
+#SBATCH -J Summary
+#SBATCH -o Summary.o%j
+
+#=====================================================================
+# This script runs: Summary.R
+# Submited on: Wed Oct 10 17:09:50 EDT 2018
+#=====================================================================
+
+# Work Directory
+cd /mnt/research/NMDL/qPCR/GYS1/Summary
+
+# Run R Code
+R -e 'library("knitr");knitr::spin ("Summary.R")'
+
+# Add metadata to md file
+cat .metadata Summary.md > tmp; mv tmp Summary.md
+
+# Render HTML
+R -e 'library("prettydoc");rmarkdown::render ("Summary.md")'
+
+# Job Details
+echo Job Details
+scontrol show job $SLURM_JOB_ID
